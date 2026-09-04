@@ -1,0 +1,79 @@
+{% comment %}
+  Inline line-icon set shared across Nuvia sections. No external icon
+  library — vanilla inline SVG only.
+
+  Accepts:
+  - icon: string key, see {% case %} below
+  - class: optional extra class(es) on the <svg>
+{% endcomment %}
+{% liquid
+  assign icon_class = 'nuvia-icon'
+  if class
+    assign icon_class = icon_class | append: ' ' | append: class
+  endif
+%}
+{% case icon %}
+  {% when 'heat' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 2c1.5 3-2 4.5-2 8a4 4 0 0 0 8 0c0-2-1-3-1-3s.5 2-1 3c.6-2 -1-4-2-4.5 .3 1.5-.5 2-2 2.5C13 6 12 4 12 2Z"/>
+      <path d="M8.5 14a3.5 3.5 0 0 0 7 0"/>
+    </svg>
+  {% when 'kneading' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="8" cy="12" r="3"/>
+      <circle cx="16" cy="12" r="3"/>
+      <path d="M8 9V6M16 9V6M8 15v3M16 15v3"/>
+    </svg>
+  {% when 'cordless' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="7" y="2" width="10" height="17" rx="3"/>
+      <path d="M10 22h4M9 7h6"/>
+    </svg>
+  {% when 'battery' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="7" width="18" height="10" rx="2"/>
+      <path d="M22 10v4"/>
+      <path d="M6 10v4"/>
+    </svg>
+  {% when 'adjustable' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h13M21 18h-1"/>
+      <circle cx="13" cy="6" r="2"/>
+      <circle cx="7" cy="12" r="2"/>
+      <circle cx="19" cy="18" r="2"/>
+    </svg>
+  {% when 'washable' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M7 13a5 5 0 0 0 10 0c0-2-2-2-2-4"/>
+    </svg>
+  {% when 'shield' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3 4 6v6c0 4.5 3.4 7.7 8 9 4.6-1.3 8-4.5 8-9V6l-8-3Z"/>
+      <path d="m9 12 2 2 4-4"/>
+    </svg>
+  {% when 'truck' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="1" y="6" width="14" height="11" rx="1"/>
+      <path d="M15 10h4l3 3v4h-7z"/>
+      <circle cx="6" cy="19" r="2"/>
+      <circle cx="17.5" cy="19" r="2"/>
+    </svg>
+  {% when 'box' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 8 12 4l9 4-9 4-9-4Z"/>
+      <path d="M3 8v9l9 4 9-4V8M12 12v9"/>
+    </svg>
+  {% when 'star' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2.5l2.9 6.2 6.7.7-5 4.6 1.4 6.7-6-3.4-6 3.4 1.4-6.7-5-4.6 6.7-.7Z"/>
+    </svg>
+  {% when 'chevron' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+  {% when 'check' %}
+    <svg class="{{ icon_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m4 12 5 5L20 6"/>
+    </svg>
+{% endcase %}

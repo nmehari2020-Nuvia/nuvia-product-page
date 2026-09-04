@@ -1,0 +1,862 @@
+{% comment %}
+  Nuvia — Buy Box
+  Image gallery + purchase panel. Uses Shopify's native product/variant/cart
+  objects only — no hardcoded price or product data. Star rating and review
+  count are PLACEHOLDER settings until real review data is available.
+{% endcomment %}
+
+<nuvia-buy-box class="nuvia-buy-box" data-section-id="{{ section.id }}" data-money-format="{{ shop.money_format | escape }}">
+  <div class="nuvia-buy-box__container page-width">
+
+    <div class="nuvia-buy-box__gallery">
+      {% if product.media.size > 0 %}
+        <div class="nuvia-buy-box__main" data-nuvia-main-media>
+          {% for media in product.media %}
+            <div class="nuvia-buy-box__main-item{% if forloop.first %} is-active{% endif %}" data-media-id="{{ media.id }}" {% if forloop.first == false %}hidden{% endif %}>
+              {% if forloop.first %}
+                {{ media | image_url: width: 1200 | image_tag:
+                  widths: '450, 750, 1100, 1400',
+                  sizes: '(min-width: 750px) 50vw, 100vw',
+                  alt: media.alt | default: product.title
+                }}
+              {% else %}
+                {{ media | image_url: width: 1200 | image_tag:
+                  loading: 'lazy',
+                  widths: '450, 750, 1100, 1400',
+                  sizes: '(min-width: 750px) 50vw, 100vw',
+                  alt: media.alt | default: product.title
+                }}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        {% if product.media.size > 1 %}
+          <div class="nuvia-buy-box__thumbs" role="tablist" aria-label="{{ 'products.product.media.gallery_viewer' | t | default: 'Product media' }}">
+            {% for media in product.media %}
+              <button type="button" class="nuvia-buy-box__thumb{% if forloop.first %} is-active{% endif %}" data-media-id="{{ media.id }}" aria-label="{{ 'products.product.media.load_image' | t | default: 'Load image' }} {{ forloop.index }}">
+                {{ media | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 150, 200', sizes: '80px', alt: '' }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% else %}
+        {% render 'nuvia-placeholder', label: 'Product image — add photos to this product', ratio: '1 / 1' %}
+      {% endif %}
+    </div>
+
+    <div class="nuvia-buy-box__info">
+
+      {% if section.settings.show_rating %}
+        <div class="nuvia-rating">
+          <span class="nuvia-rating__stars" aria-hidden="true">
+            {% assign nuvia_rounded_rating = section.settings.rating_value | round %}
+            {% for i in (1..5) %}
+              {% if i <= nuvia_rounded_rating %}
+                {% render 'nuvia-icon', icon: 'star', class: 'is-filled' %}
+              {% else %}
+                {% render 'nuvia-icon', icon: 'star', class: 'is-empty' %}
+              {% endif %}
+            {% endfor %}
+          </span>
+          <span class="nuvia-rating__count">{{ section.settings.review_count_label }}</span>
+        </div>
+      {% endif %}
+
+      <h1 class="nuvia-buy-box__title">{{ product.title }}</h1>
+
+      {% if section.settings.hook_text != blank %}
+        <p class="nuvia-buy-box__hook">{{ section.settings.hook_text }}</p>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <ul class="nuvia-buy-box__benefits">
+          {% for block in section.blocks %}
+            {% if block.type == 'benefit' %}
+              <li class="nuvia-buy-box__benefit" {{ block.shopify_attributes }}>
+                {% render 'nuvia-icon', icon: block.settings.icon, class: 'nuvia-buy-box__benefit-icon' %}
+                <span>{{ block.settings.text }}</span>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <div class="nuvia-buy-box__price" data-nuvia-price>
+        {% render 'nuvia-price', variant: product.selected_or_first_available_variant %}
+      </div>
+
+      {% form 'product', product, id: 'nuvia-buy-box-form', class: 'nuvia-buy-box__form' %}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-nuvia-variant-id>
+
+        {% unless product.has_only_default_variant %}
+          {% for option in product.options_with_values %}
+            <fieldset class="nuvia-buy-box__option" data-nuvia-option-position="{{ option.position }}">
+              <legend>{{ option.name }}</legend>
+              <div class="nuvia-buy-box__option-values">
+                {% for value in option.values %}
+                  <label class="nuvia-buy-box__option-value">
+                    <input
+                      type="radio"
+                      name="nuvia-option-{{ option.position }}"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}checked{% endif %}
+                      data-nuvia-option-input
+                    >
+                    <span>{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+        {% endunless %}
+
+        <button
+          type="submit"
+          name="add"
+          class="nuvia-buy-box__atc"
+          data-nuvia-atc
+          {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+        >
+          <span
+            data-nuvia-atc-text
+            data-label-available="{{ section.settings.atc_label | escape }}"
+            data-label-sold-out="{{ section.settings.sold_out_label | escape }}"
+          >
+            {%- if product.selected_or_first_available_variant.available -%}
+              {{ section.settings.atc_label }}
+            {%- else -%}
+              {{ section.settings.sold_out_label }}
+            {%- endif -%}
+          </span>
+        </button>
+      {% endform %}
+
+      {% if section.settings.show_payment_badges and shop.enabled_payment_types.size > 0 %}
+        <div class="nuvia-buy-box__payments" aria-label="{{ 'products.product.payment_types' | t | default: 'Accepted payment methods' }}">
+          {% for type in shop.enabled_payment_types %}
+            {{ type | payment_type_svg_tag: class: 'nuvia-buy-box__payment-icon' }}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.guarantee_text != blank %}
+        <div class="nuvia-buy-box__guarantee">
+          {% render 'nuvia-icon', icon: 'shield' %}
+          <span>{{ section.settings.guarantee_text }}</span>
+        </div>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <div class="nuvia-buy-box__accordion">
+          {% for block in section.blocks %}
+            {% if block.type == 'accordion_item' %}
+              <details class="nuvia-buy-box__accordion-item" {{ block.shopify_attributes }}>
+                <summary>
+                  <span>{{ block.settings.title }}</span>
+                  {% render 'nuvia-icon', icon: 'chevron', class: 'nuvia-buy-box__accordion-chevron' %}
+                </summary>
+                <div class="nuvia-buy-box__accordion-content">
+                  {{ block.settings.content }}
+                </div>
+              </details>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  {% if section.settings.enable_sticky_atc %}
+    <div class="nuvia-sticky-atc" data-nuvia-sticky-atc hidden>
+      <div class="nuvia-sticky-atc__inner page-width">
+        <span class="nuvia-sticky-atc__title">{{ product.title }}</span>
+        <span class="nuvia-sticky-atc__price" data-nuvia-sticky-price>
+          {% render 'nuvia-price', variant: product.selected_or_first_available_variant %}
+        </span>
+        <button type="submit" form="nuvia-buy-box-form" class="nuvia-sticky-atc__button" data-nuvia-sticky-atc-button {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+          {%- if product.selected_or_first_available_variant.available -%}
+            {{ section.settings.atc_label }}
+          {%- else -%}
+            {{ section.settings.sold_out_label }}
+          {%- endif -%}
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
+  <script type="application/json" data-nuvia-product-json>
+    {{ product | json }}
+  </script>
+</nuvia-buy-box>
+
+{% stylesheet %}
+  .nuvia-buy-box {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-bg: #FFFFFF;
+    --nuvia-text: #1A1A1A;
+    --nuvia-star: #F5C518;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    display: block;
+    background: var(--nuvia-bg);
+    color: var(--nuvia-text);
+    font-family: var(--nuvia-font-body);
+    padding: 1.5rem 0 2.5rem;
+  }
+
+  .nuvia-buy-box__container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-buy-box__main-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .nuvia-buy-box__thumbs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+  }
+
+  .nuvia-buy-box__thumb {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    background: none;
+    cursor: pointer;
+  }
+
+  .nuvia-buy-box__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .nuvia-buy-box__thumb.is-active {
+    border-color: var(--nuvia-forest);
+  }
+
+  .nuvia-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .nuvia-rating__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: #D8D8D8;
+  }
+
+  .nuvia-rating__stars .nuvia-icon.is-filled {
+    color: var(--nuvia-star);
+  }
+
+  .nuvia-rating__stars .nuvia-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nuvia-rating__count {
+    font-size: 0.8125rem;
+    color: #5c5c5c;
+  }
+
+  .nuvia-buy-box__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-buy-box__hook {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #3a3a3a;
+    margin: 0 0 1rem;
+  }
+
+  .nuvia-buy-box__benefits {
+    list-style: none;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .nuvia-buy-box__benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+  }
+
+  .nuvia-buy-box__benefit-icon {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-buy-box__price {
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .nuvia-buy-box__option {
+    border: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .nuvia-buy-box__option legend {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .nuvia-buy-box__option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .nuvia-buy-box__option-value {
+    position: relative;
+    display: inline-block;
+  }
+
+  .nuvia-buy-box__option-value input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nuvia-buy-box__option-value span {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid #cfcfcf;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .nuvia-buy-box__option-value input:checked + span {
+    border-color: var(--nuvia-forest);
+    background: var(--nuvia-forest);
+    color: #fff;
+  }
+
+  .nuvia-buy-box__option-value input:focus-visible + span {
+    outline: 2px solid var(--nuvia-forest);
+    outline-offset: 2px;
+  }
+
+  .nuvia-buy-box__atc {
+    width: 100%;
+    padding: 1rem;
+    background: var(--nuvia-forest);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .nuvia-buy-box__atc:hover:not(:disabled) {
+    background: var(--nuvia-sage);
+  }
+
+  .nuvia-buy-box__atc:disabled {
+    background: #b9b9b9;
+    cursor: not-allowed;
+  }
+
+  .nuvia-buy-box__payments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .nuvia-buy-box__payment-icon {
+    height: 24px;
+    width: auto;
+  }
+
+  .nuvia-buy-box__guarantee {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ececec;
+    font-size: 0.875rem;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-buy-box__guarantee .nuvia-icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+
+  .nuvia-buy-box__accordion {
+    margin-top: 1.25rem;
+    border-top: 1px solid #ececec;
+  }
+
+  .nuvia-buy-box__accordion-item {
+    border-bottom: 1px solid #ececec;
+  }
+
+  .nuvia-buy-box__accordion-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    list-style: none;
+  }
+
+  .nuvia-buy-box__accordion-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nuvia-buy-box__accordion-chevron {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.15s ease;
+    flex: 0 0 auto;
+  }
+
+  .nuvia-buy-box__accordion-item[open] .nuvia-buy-box__accordion-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nuvia-buy-box__accordion-content {
+    padding: 0 0 1rem;
+    font-size: 0.875rem;
+    color: #3a3a3a;
+    line-height: 1.6;
+  }
+
+  .nuvia-sticky-atc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    background: #fff;
+    border-top: 1px solid #ececec;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+    padding: 0.625rem 0;
+  }
+
+  .nuvia-sticky-atc__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-sticky-atc__title {
+    display: none;
+  }
+
+  .nuvia-sticky-atc__price {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+
+  .nuvia-sticky-atc__button {
+    flex: 1;
+    padding: 0.75rem;
+    background: var(--nuvia-forest);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .nuvia-sticky-atc__button:disabled {
+    background: #b9b9b9;
+    cursor: not-allowed;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-buy-box__container {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 3rem;
+    }
+
+    .nuvia-buy-box__gallery,
+    .nuvia-buy-box__info {
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+
+    .nuvia-buy-box__title {
+      font-size: 2.25rem;
+    }
+
+    .nuvia-sticky-atc__title {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nuvia-sticky-atc__button {
+      flex: 0 0 auto;
+      padding: 0.75rem 2rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .nuvia-buy-box {
+      padding: 3rem 0;
+    }
+
+    .nuvia-buy-box__title {
+      font-size: 2.75rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class NuviaBuyBox extends HTMLElement {
+    connectedCallback() {
+      this.moneyFormat = this.dataset.moneyFormat || '${{amount}}';
+      this.productJson = JSON.parse(this.querySelector('[data-nuvia-product-json]').textContent);
+      this.variantIdInput = this.querySelector('[data-nuvia-variant-id]');
+      this.priceEl = this.querySelector('[data-nuvia-price]');
+      this.stickyPriceEl = this.querySelector('[data-nuvia-sticky-price]');
+      this.atcButton = this.querySelector('[data-nuvia-atc]');
+      this.atcText = this.querySelector('[data-nuvia-atc-text]');
+      this.stickyAtcButton = this.querySelector('[data-nuvia-sticky-atc-button]');
+      this.optionInputs = Array.from(this.querySelectorAll('[data-nuvia-option-input]'));
+
+      this.optionInputs.forEach((input) => {
+        input.addEventListener('change', () => this.handleOptionChange());
+      });
+
+      this.setupMediaSwitcher();
+      this.setupStickyAtc();
+    }
+
+    getSelectedOptions() {
+      const fieldsets = Array.from(this.querySelectorAll('[data-nuvia-option-position]'));
+      return fieldsets
+        .sort((a, b) => Number(a.dataset.nuviaOptionPosition) - Number(b.dataset.nuviaOptionPosition))
+        .map((fieldset) => {
+          const checked = fieldset.querySelector('[data-nuvia-option-input]:checked');
+          return checked ? checked.value : null;
+        });
+    }
+
+    findMatchingVariant(selectedOptions) {
+      return this.productJson.variants.find((variant) => {
+        const variantOptions = [variant.option1, variant.option2, variant.option3].filter(
+          (value) => value !== null && value !== undefined
+        );
+        return (
+          variantOptions.length === selectedOptions.length &&
+          variantOptions.every((value, index) => value === selectedOptions[index])
+        );
+      });
+    }
+
+    handleOptionChange() {
+      const selected = this.getSelectedOptions();
+      const variant = this.findMatchingVariant(selected);
+      if (!variant) return;
+      this.updateForVariant(variant);
+    }
+
+    updateForVariant(variant) {
+      if (this.variantIdInput) this.variantIdInput.value = variant.id;
+
+      const formatted = this.formatMoney(variant.price);
+      const compareFormatted = variant.compare_at_price > variant.price ? this.formatMoney(variant.compare_at_price) : null;
+      this.renderPrice(this.priceEl, formatted, compareFormatted);
+      this.renderPrice(this.stickyPriceEl, formatted, compareFormatted);
+
+      const available = variant.available;
+      [this.atcButton, this.stickyAtcButton].forEach((btn) => {
+        if (!btn) return;
+        btn.disabled = !available;
+      });
+      if (this.atcText) {
+        this.atcText.textContent = available ? this.atcText.dataset.labelAvailable : this.atcText.dataset.labelSoldOut;
+      }
+
+      if (variant.featured_media) {
+        const target = this.querySelector('[data-media-id="' + variant.featured_media.id + '"]');
+        if (target) this.showMedia(target);
+      }
+    }
+
+    formatMoney(cents) {
+      const placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+      const match = this.moneyFormat.match(placeholderRegex);
+      const key = match ? match[1] : 'amount';
+
+      const withDelimiters = (number, precision, thousands, decimalSep) => {
+        const amount = (number / 100).toFixed(precision);
+        const parts = amount.split('.');
+        const dollars = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+        return parts[1] ? dollars + decimalSep + parts[1] : dollars;
+      };
+
+      let value;
+      switch (key) {
+        case 'amount_no_decimals':
+          value = withDelimiters(cents, 0, ',', '.');
+          break;
+        case 'amount_with_comma_separator':
+          value = withDelimiters(cents, 2, '.', ',');
+          break;
+        case 'amount_no_decimals_with_comma_separator':
+          value = withDelimiters(cents, 0, '.', ',');
+          break;
+        default:
+          value = withDelimiters(cents, 2, ',', '.');
+      }
+
+      return match ? this.moneyFormat.replace(placeholderRegex, value) : '$' + value;
+    }
+
+    renderPrice(el, price, comparePrice) {
+      if (!el) return;
+      el.innerHTML = comparePrice
+        ? '<span class="nuvia-price__sale">' + price + '</span> <s class="nuvia-price__compare">' + comparePrice + '</s>'
+        : '<span>' + price + '</span>';
+    }
+
+    setupMediaSwitcher() {
+      const thumbs = Array.from(this.querySelectorAll('.nuvia-buy-box__thumb'));
+      thumbs.forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+          const target = this.querySelector('[data-nuvia-main-media] [data-media-id="' + thumb.dataset.mediaId + '"]');
+          if (target) this.showMedia(target);
+          thumbs.forEach((t) => t.classList.toggle('is-active', t === thumb));
+        });
+      });
+    }
+
+    showMedia(target) {
+      const items = this.querySelectorAll('[data-nuvia-main-media] .nuvia-buy-box__main-item');
+      items.forEach((item) => {
+        const isTarget = item === target;
+        item.hidden = !isTarget;
+        item.classList.toggle('is-active', isTarget);
+        if (isTarget) {
+          const img = item.querySelector('img[loading="lazy"]');
+          if (img) img.loading = 'eager';
+        }
+      });
+    }
+
+    setupStickyAtc() {
+      const sticky = this.querySelector('[data-nuvia-sticky-atc]');
+      const trigger = this.atcButton;
+      if (!sticky || !trigger || !('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            sticky.hidden = entry.isIntersecting;
+          });
+        },
+        { rootMargin: '0px 0px -10% 0px' }
+      );
+      observer.observe(trigger);
+    }
+  }
+
+  customElements.define('nuvia-buy-box', NuviaBuyBox);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Nuvia Buy Box",
+  "tag": "section",
+  "class": "section-nuvia-buy-box",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Rating — PLACEHOLDER"
+    },
+    {
+      "type": "paragraph",
+      "content": "Star rating and review count are placeholder values. Replace with real data once available, or turn off until then."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rating_value",
+      "label": "Rating value (PLACEHOLDER)",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.8
+    },
+    {
+      "type": "text",
+      "id": "review_count_label",
+      "label": "Review count text (PLACEHOLDER)",
+      "default": "PLACEHOLDER — add real review count"
+    },
+    {
+      "type": "header",
+      "content": "Headline & hook"
+    },
+    {
+      "type": "text",
+      "id": "hook_text",
+      "label": "One-line hook",
+      "default": "Soothing warmth and deep kneading pressure, right where tension builds."
+    },
+    {
+      "type": "header",
+      "content": "Buy button"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to cart button label",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out button label",
+      "default": "Sold Out"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_atc",
+      "label": "Enable sticky add-to-cart bar on mobile scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_badges",
+      "label": "Show accepted payment icons",
+      "info": "Pulled automatically from Settings > Payments — nothing to configure here.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Guarantee strip"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee text",
+      "default": "90-Day Money-Back Guarantee"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit bullet",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "heat", "label": "Heat" },
+            { "value": "kneading", "label": "Kneading" },
+            { "value": "cordless", "label": "Cordless" },
+            { "value": "battery", "label": "Battery" },
+            { "value": "adjustable", "label": "Adjustable" },
+            { "value": "washable", "label": "Washable" }
+          ],
+          "default": "kneading"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Benefit text",
+          "default": "Finger-like kneading pressure that reaches deep, stubborn tension"
+        }
+      ]
+    },
+    {
+      "type": "accordion_item",
+      "name": "Accordion item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Our Guarantee"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Try Nuvia for 90 days. If it's not right for you, return it for a full refund — no questions asked.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia Buy Box",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "kneading", "text": "Finger-like kneading pressure that reaches deep, stubborn tension" } },
+        { "type": "benefit", "settings": { "icon": "heat", "text": "Soothing warmth designed to help muscles relax before the kneading gets to work" } },
+        { "type": "benefit", "settings": { "icon": "cordless", "text": "Cordless and hands-free, so it's easy to actually use every day" } },
+        { "type": "accordion_item", "settings": { "title": "Our Guarantee", "content": "<p>Try Nuvia for 90 days. If it's not right for you, return it for a full refund — no questions asked.</p>" } },
+        { "type": "accordion_item", "settings": { "title": "Shipping", "content": "<p>We ship fast from the US. Add your exact delivery timeframe and any shipping cost details here.</p>" } },
+        { "type": "accordion_item", "settings": { "title": "What's in the Box", "content": "<p>1 Nuvia Neck &amp; Shoulder Massager, 1 USB charging cable, 1 quick start guide.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
