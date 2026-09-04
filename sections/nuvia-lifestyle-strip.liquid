@@ -1,0 +1,161 @@
+{% comment %}
+  Nuvia — Lifestyle Image Strip
+  Every image is a merchant-picked image_picker setting — nothing is
+  embedded or hardcoded. Any slot left empty renders a neutral gray
+  placeholder box labeled with the setting name, so the section still
+  looks intentional before photos are uploaded.
+{% endcomment %}
+
+<div class="nuvia-lifestyle">
+  <div class="nuvia-lifestyle__container">
+    {% if section.settings.eyebrow != blank or section.settings.headline != blank %}
+      <div class="nuvia-heading">
+        {% if section.settings.eyebrow != blank %}
+          <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        {% if section.settings.headline != blank %}
+          <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="nuvia-lifestyle__grid">
+        {% for block in section.blocks %}
+          <div class="nuvia-lifestyle__item" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 1000 | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800, 1000',
+                sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                alt: block.settings.alt_text | default: block.settings.image.alt
+              }}
+            {% else %}
+              {% render 'nuvia-placeholder', label: 'Lifestyle image ' | append: forloop.index, ratio: '4 / 5' %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-lifestyle {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #ffffff;
+    padding: 2.5rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-lifestyle__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-lifestyle__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .nuvia-lifestyle__item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-lifestyle__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia Lifestyle Strip",
+  "tag": "section",
+  "class": "section-nuvia-lifestyle",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": ""
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": ""
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Lifestyle image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text",
+          "info": "Describe the image for screen readers and SEO."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia Lifestyle Strip",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

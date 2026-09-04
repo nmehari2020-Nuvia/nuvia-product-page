@@ -1,0 +1,258 @@
+{% comment %}
+  Nuvia — What to Expect
+  Timeline of milestones, each with two short tag labels. Copy is
+  expectation-setting, not a results guarantee — no promised outcomes or
+  timeframes for symptom relief.
+{% endcomment %}
+
+<div class="nuvia-timeline">
+  <div class="nuvia-timeline__container">
+    <div class="nuvia-heading">
+      {% if section.settings.eyebrow != blank %}
+        <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.headline != blank %}
+        <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <ol class="nuvia-timeline__list">
+        {% for block in section.blocks %}
+          {% if block.type == 'milestone' %}
+            <li class="nuvia-timeline__item" {{ block.shopify_attributes }}>
+              <div class="nuvia-timeline__marker" aria-hidden="true"></div>
+              <div class="nuvia-timeline__content">
+                <p class="nuvia-timeline__label">{{ block.settings.label }}</p>
+                <div class="nuvia-timeline__tags">
+                  {% if block.settings.tag_1 != blank %}
+                    <span class="nuvia-timeline__tag">{{ block.settings.tag_1 }}</span>
+                  {% endif %}
+                  {% if block.settings.tag_2 != blank %}
+                    <span class="nuvia-timeline__tag">{{ block.settings.tag_2 }}</span>
+                  {% endif %}
+                </div>
+                {% if block.settings.description != blank %}
+                  <div class="nuvia-timeline__description">{{ block.settings.description }}</div>
+                {% endif %}
+              </div>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-timeline {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #ffffff;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-timeline__container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-timeline__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .nuvia-timeline__list::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: #dcdcdc;
+  }
+
+  .nuvia-timeline__item {
+    display: flex;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+    position: relative;
+  }
+
+  .nuvia-timeline__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .nuvia-timeline__marker {
+    flex: 0 0 auto;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--nuvia-forest);
+    margin-top: 0.375rem;
+    z-index: 1;
+  }
+
+  .nuvia-timeline__label {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-timeline__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .nuvia-timeline__tag {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: #ECF1EE;
+    color: var(--nuvia-forest);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .nuvia-timeline__description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #3a3a3a;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia What to Expect",
+  "tag": "section",
+  "class": "section-nuvia-timeline",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "WHAT TO EXPECT"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Your first <em>90 days</em></p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Milestone label",
+          "default": "Day 1"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1",
+          "default": "Unbox & Charge"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "First Session"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Charge Nuvia, drape it over your shoulders, and try your first session on a low setting.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia What to Expect",
+      "blocks": [
+        {
+          "type": "milestone",
+          "settings": {
+            "label": "Day 1",
+            "tag_1": "Unbox & Charge",
+            "tag_2": "First Session",
+            "description": "<p>Charge Nuvia, drape it over your shoulders, and try your first session on a low setting.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "label": "Week 1",
+            "tag_1": "Finding Your Settings",
+            "tag_2": "Building the Habit",
+            "description": "<p>Get familiar with your favorite heat and intensity combination and work it into your daily routine.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "label": "Week 2–3",
+            "tag_1": "Part of the Routine",
+            "tag_2": "Settling In",
+            "description": "<p>Reaching for Nuvia starts to feel automatic — after a long day, mid-afternoon slump, or before bed.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "label": "Day 90",
+            "tag_1": "Guarantee Window Ends",
+            "tag_2": "Keep or Return",
+            "description": "<p>Decide if Nuvia is a keeper. If it's not right for you, you're covered by the 90-day money-back guarantee.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

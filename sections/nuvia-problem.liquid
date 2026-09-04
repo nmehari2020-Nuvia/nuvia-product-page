@@ -1,0 +1,237 @@
+{% comment %}
+  Nuvia — The Problem
+  Numbered 01/02/03 pain points next to a supporting image_picker image
+  (falls back to a placeholder box when empty).
+{% endcomment %}
+
+<div class="nuvia-problem">
+  <div class="nuvia-problem__container">
+    <div class="nuvia-heading">
+      {% if section.settings.eyebrow != blank %}
+        <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.headline != blank %}
+        <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="nuvia-problem__layout">
+      <div class="nuvia-problem__media">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1000 | image_tag:
+            loading: 'lazy',
+            widths: '400, 600, 800, 1000',
+            sizes: '(min-width: 750px) 45vw, 100vw',
+            alt: section.settings.image_alt | default: section.settings.image.alt
+          }}
+        {% else %}
+          {% render 'nuvia-placeholder', label: 'Supporting image', ratio: '4 / 3' %}
+        {% endif %}
+      </div>
+
+      {% if section.blocks.size > 0 %}
+        <div class="nuvia-problem__points">
+          {% for block in section.blocks %}
+            {% if block.type == 'pain_point' %}
+              <div class="nuvia-problem__point" {{ block.shopify_attributes }}>
+                <span class="nuvia-problem__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <div>
+                  <h3 class="nuvia-problem__title">{{ block.settings.title }}</h3>
+                  <div class="nuvia-problem__description">{{ block.settings.description }}</div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-problem {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #F7F5F1;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-problem__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-problem__layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .nuvia-problem__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .nuvia-problem__points {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .nuvia-problem__point {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .nuvia-problem__number {
+    font-family: var(--nuvia-font-headline);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--nuvia-sage);
+    flex: 0 0 auto;
+    line-height: 1;
+  }
+
+  .nuvia-problem__title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 0 0 0.375rem;
+  }
+
+  .nuvia-problem__description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #3a3a3a;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-problem__layout {
+      flex-direction: row;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .nuvia-problem__media,
+    .nuvia-problem__points {
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia The Problem",
+  "tag": "section",
+  "class": "section-nuvia-problem",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "THE PROBLEM"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Where the tension <em>really</em> comes from</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Supporting image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pain_point",
+      "name": "Pain point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Desk Days Add Up"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Hours hunched over a screen or phone keep the neck and shoulders in the same tight position, all day, every day.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia The Problem",
+      "blocks": [
+        {
+          "type": "pain_point",
+          "settings": {
+            "title": "Desk Days Add Up",
+            "description": "<p>Hours hunched over a screen or phone keep the neck and shoulders in the same tight position, all day, every day.</p>"
+          }
+        },
+        {
+          "type": "pain_point",
+          "settings": {
+            "title": "Tension Turns Into Headaches",
+            "description": "<p>Tight muscles at the base of the skull are a common trigger for the dull, tension-type headaches that creep in by afternoon.</p>"
+          }
+        },
+        {
+          "type": "pain_point",
+          "settings": {
+            "title": "There's Never Time to Relax",
+            "description": "<p>Booking a massage takes planning you don't have time for. Nuvia works at your desk, in the car, or on the couch.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

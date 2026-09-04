@@ -1,0 +1,322 @@
+{
+  "sections": {
+    "nuvia-announcement-bar": {
+      "type": "nuvia-announcement-bar",
+      "settings": {
+        "rotate_seconds": 4
+      },
+      "blocks": {
+        "stat-1": {
+          "type": "stat",
+          "settings": {
+            "text": "90-Day Money-Back Guarantee"
+          }
+        },
+        "stat-2": {
+          "type": "stat",
+          "settings": {
+            "text": "Free Shipping on All US Orders"
+          }
+        },
+        "stat-3": {
+          "type": "stat",
+          "settings": {
+            "text": "PLACEHOLDER — add real customer count or rating once available"
+          }
+        }
+      },
+      "block_order": ["stat-1", "stat-2", "stat-3"]
+    },
+    "nuvia-buy-box": {
+      "type": "nuvia-buy-box",
+      "settings": {
+        "show_rating": true,
+        "rating_value": 4.8,
+        "review_count_label": "PLACEHOLDER — add real review count",
+        "hook_text": "Soothing warmth and deep kneading pressure, right where tension builds.",
+        "atc_label": "Add to Cart",
+        "sold_out_label": "Sold Out",
+        "enable_sticky_atc": true,
+        "show_payment_badges": true,
+        "guarantee_text": "90-Day Money-Back Guarantee"
+      },
+      "blocks": {
+        "benefit-1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "kneading",
+            "text": "Finger-like kneading pressure that reaches deep, stubborn tension"
+          }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "heat",
+            "text": "Soothing warmth designed to help muscles relax before the kneading gets to work"
+          }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "cordless",
+            "text": "Cordless and hands-free, so it's easy to actually use every day"
+          }
+        },
+        "accordion-1": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Our Guarantee",
+            "content": "<p>Try Nuvia for 90 days. If it's not right for you, return it for a full refund — no questions asked.</p>"
+          }
+        },
+        "accordion-2": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Shipping",
+            "content": "<p>We ship fast from the US. Add your exact delivery timeframe and any shipping cost details here.</p>"
+          }
+        },
+        "accordion-3": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "What's in the Box",
+            "content": "<p>1 Nuvia Neck &amp; Shoulder Massager, 1 USB charging cable, 1 quick start guide.</p>"
+          }
+        }
+      },
+      "block_order": ["benefit-1", "benefit-2", "benefit-3", "accordion-1", "accordion-2", "accordion-3"]
+    },
+    "nuvia-lifestyle-strip": {
+      "type": "nuvia-lifestyle-strip",
+      "settings": {
+        "eyebrow": "",
+        "headline": ""
+      },
+      "blocks": {
+        "image-1": { "type": "image", "settings": {} },
+        "image-2": { "type": "image", "settings": {} },
+        "image-3": { "type": "image", "settings": {} }
+      },
+      "block_order": ["image-1", "image-2", "image-3"]
+    },
+    "nuvia-testimonials": {
+      "type": "nuvia-testimonials",
+      "settings": {
+        "eyebrow": "WHAT CUSTOMERS SAY",
+        "headline": "<p>Real relief, in their <em>own words</em></p>",
+        "verified_label": "Verified Buyer"
+      },
+      "blocks": {
+        "testimonial-1": { "type": "testimonial", "settings": {} },
+        "testimonial-2": { "type": "testimonial", "settings": {} },
+        "testimonial-3": { "type": "testimonial", "settings": {} },
+        "testimonial-4": { "type": "testimonial", "settings": {} },
+        "testimonial-5": { "type": "testimonial", "settings": {} },
+        "testimonial-6": { "type": "testimonial", "settings": {} }
+      },
+      "block_order": [
+        "testimonial-1",
+        "testimonial-2",
+        "testimonial-3",
+        "testimonial-4",
+        "testimonial-5",
+        "testimonial-6"
+      ]
+    },
+    "nuvia-science": {
+      "type": "nuvia-science",
+      "settings": {
+        "eyebrow": "THE SCIENCE",
+        "headline": "<p>How tension actually <em>releases</em></p>"
+      },
+      "blocks": {
+        "step-1": {
+          "type": "step",
+          "settings": {
+            "title": "Tension builds",
+            "description": "<p>Hours at a desk, on the phone, or looking down at a screen keep the neck and shoulder muscles in a constant, low-grade contraction.</p>"
+          }
+        },
+        "step-2": {
+          "type": "step",
+          "settings": {
+            "title": "Heat softens the muscle",
+            "description": "<p>Gentle, soothing warmth helps tight muscle fibers relax, making them more receptive to pressure.</p>"
+          }
+        },
+        "step-3": {
+          "type": "step",
+          "settings": {
+            "title": "Kneading works it loose",
+            "description": "<p>Rotating nodes apply finger-like pressure to ease everyday stiffness and soothe tight, tense muscles.</p>"
+          }
+        }
+      },
+      "block_order": ["step-1", "step-2", "step-3"]
+    },
+    "nuvia-trust": {
+      "type": "nuvia-trust",
+      "settings": {
+        "enable_section": false,
+        "eyebrow": "THE TRUST",
+        "headline": "<p>Backed by <em>professionals</em></p>"
+      },
+      "blocks": {
+        "endorsement-1": { "type": "endorsement", "settings": {} },
+        "endorsement-2": { "type": "endorsement", "settings": {} }
+      },
+      "block_order": ["endorsement-1", "endorsement-2"]
+    },
+    "nuvia-timeline": {
+      "type": "nuvia-timeline",
+      "settings": {
+        "eyebrow": "WHAT TO EXPECT",
+        "headline": "<p>Your first <em>90 days</em></p>"
+      },
+      "blocks": {
+        "milestone-1": {
+          "type": "milestone",
+          "settings": {
+            "label": "Day 1",
+            "tag_1": "Unbox & Charge",
+            "tag_2": "First Session",
+            "description": "<p>Charge Nuvia, drape it over your shoulders, and try your first session on a low setting.</p>"
+          }
+        },
+        "milestone-2": {
+          "type": "milestone",
+          "settings": {
+            "label": "Week 1",
+            "tag_1": "Finding Your Settings",
+            "tag_2": "Building the Habit",
+            "description": "<p>Get familiar with your favorite heat and intensity combination and work it into your daily routine.</p>"
+          }
+        },
+        "milestone-3": {
+          "type": "milestone",
+          "settings": {
+            "label": "Week 2–3",
+            "tag_1": "Part of the Routine",
+            "tag_2": "Settling In",
+            "description": "<p>Reaching for Nuvia starts to feel automatic — after a long day, mid-afternoon slump, or before bed.</p>"
+          }
+        },
+        "milestone-4": {
+          "type": "milestone",
+          "settings": {
+            "label": "Day 90",
+            "tag_1": "Guarantee Window Ends",
+            "tag_2": "Keep or Return",
+            "description": "<p>Decide if Nuvia is a keeper. If it's not right for you, you're covered by the 90-day money-back guarantee.</p>"
+          }
+        }
+      },
+      "block_order": ["milestone-1", "milestone-2", "milestone-3", "milestone-4"]
+    },
+    "nuvia-problem": {
+      "type": "nuvia-problem",
+      "settings": {
+        "eyebrow": "THE PROBLEM",
+        "headline": "<p>Where the tension <em>really</em> comes from</p>"
+      },
+      "blocks": {
+        "point-1": {
+          "type": "pain_point",
+          "settings": {
+            "title": "Desk Days Add Up",
+            "description": "<p>Hours hunched over a screen or phone keep the neck and shoulders in the same tight position, all day, every day.</p>"
+          }
+        },
+        "point-2": {
+          "type": "pain_point",
+          "settings": {
+            "title": "Tension Turns Into Headaches",
+            "description": "<p>Tight muscles at the base of the skull are a common trigger for the dull, tension-type headaches that creep in by afternoon.</p>"
+          }
+        },
+        "point-3": {
+          "type": "pain_point",
+          "settings": {
+            "title": "There's Never Time to Relax",
+            "description": "<p>Booking a massage takes planning you don't have time for. Nuvia works at your desk, in the car, or on the couch.</p>"
+          }
+        }
+      },
+      "block_order": ["point-1", "point-2", "point-3"]
+    },
+    "nuvia-review-feed": {
+      "type": "nuvia-review-feed",
+      "settings": {
+        "eyebrow": "REVIEWS",
+        "headline": "<p>What people are <em>saying</em></p>",
+        "widget_container_id": "nuvia-review-feed"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "nuvia-faq": {
+      "type": "nuvia-faq",
+      "settings": {
+        "eyebrow": "FAQ",
+        "headline": "<p>Questions, <em>answered</em></p>"
+      },
+      "blocks": {
+        "faq-1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Does Nuvia get hot?",
+            "answer": "<p>Nuvia uses gentle, soothing infrared heat designed to help your muscles relax — it's meant to feel warm and comforting, not intensely hot like a heating pad on its highest setting.</p>"
+          }
+        },
+        "faq-2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does the battery last?",
+            "answer": "<p>Nuvia is fully cordless and rechargeable via USB. A full charge easily covers several sessions before you need to plug it back in, and lighter heat and intensity settings stretch runtime further.</p>"
+          }
+        },
+        "faq-3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is the massage strong enough for real tension?",
+            "answer": "<p>Nuvia's kneading nodes are designed to mimic finger-and-thumb pressure, with multiple intensity levels so you can dial it up as your muscles get used to it.</p>"
+          }
+        },
+        "faq-4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Will the straps be comfortable for my size?",
+            "answer": "<p>The adjustable straps let you customize both fit and pressure, so you can find a comfortable hold whether you're using it for five minutes or thirty.</p>"
+          }
+        },
+        "faq-5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Why does it shut off automatically?",
+            "answer": "<p>Nuvia includes an automatic shut-off as a safety feature at the end of each session. Just turn it back on to keep going — it's a safeguard, not a limit on how much you can use it.</p>"
+          }
+        }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3", "faq-4", "faq-5"]
+    },
+    "nuvia-footer": {
+      "type": "nuvia-footer",
+      "settings": {
+        "guarantee_text": "90-Day Money-Back Guarantee"
+      }
+    }
+  },
+  "order": [
+    "nuvia-announcement-bar",
+    "nuvia-buy-box",
+    "nuvia-lifestyle-strip",
+    "nuvia-testimonials",
+    "nuvia-science",
+    "nuvia-trust",
+    "nuvia-timeline",
+    "nuvia-problem",
+    "nuvia-review-feed",
+    "nuvia-faq",
+    "nuvia-footer"
+  ]
+}

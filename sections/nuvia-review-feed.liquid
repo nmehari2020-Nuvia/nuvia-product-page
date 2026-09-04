@@ -1,0 +1,144 @@
+{% comment %}
+  Nuvia — Review Feed
+  A clean, styled container for a review app widget (Judge.me, Loox,
+  etc.). Paste the app's embed snippet into the "Embed code" block below
+  via the theme editor — nothing to touch in code. Until an app is
+  connected, the container shows a quiet placeholder note instead of
+  empty space.
+{% endcomment %}
+
+<div class="nuvia-review-feed">
+  <div class="nuvia-review-feed__container">
+    <div class="nuvia-heading">
+      {% if section.settings.eyebrow != blank %}
+        <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.headline != blank %}
+        <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+      {% endif %}
+    </div>
+
+    <div id="{{ section.settings.widget_container_id | default: 'nuvia-review-feed' }}" class="nuvia-review-feed__widget" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+      {% assign has_embed = false %}
+      {% for block in section.blocks %}
+        {% if block.type == 'embed_code' %}
+          {% assign has_embed = true %}
+          <div {{ block.shopify_attributes }}>{{ block.settings.code }}</div>
+        {% endif %}
+      {% endfor %}
+
+      {% unless has_embed %}
+        <p class="nuvia-review-feed__empty">Connect a review app (Judge.me, Loox, etc.) and drop its embed code into an "Embed code" block here.</p>
+      {% endunless %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-review-feed {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #ffffff;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-review-feed__container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-review-feed__widget {
+    min-height: 4rem;
+  }
+
+  .nuvia-review-feed__empty {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #767676;
+    border: 1px dashed #d0d0d0;
+    border-radius: 6px;
+    padding: 2rem 1rem;
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia Review Feed",
+  "tag": "section",
+  "class": "section-nuvia-review-feed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "REVIEWS"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>What people are <em>saying</em></p>"
+    },
+    {
+      "type": "text",
+      "id": "widget_container_id",
+      "label": "Widget container ID",
+      "info": "Some review apps ask you to target a specific element ID. Change this only if your app's install instructions require it.",
+      "default": "nuvia-review-feed"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "embed_code",
+      "name": "Embed code",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "code",
+          "label": "Review app embed code",
+          "info": "Paste the snippet your review app (Judge.me, Loox, etc.) gives you for a product review widget."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia Review Feed"
+    }
+  ]
+}
+{% endschema %}

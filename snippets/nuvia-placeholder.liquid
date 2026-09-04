@@ -1,0 +1,31 @@
+{% comment %}
+  Neutral placeholder box shown in the theme editor when a merchant-picked
+  image setting is empty. Never embeds a real image — dev/editor aid only.
+
+  Accepts:
+  - label: string shown inside the box (e.g. the setting name)
+  - ratio: CSS aspect-ratio value, default "1 / 1"
+{% endcomment %}
+<div class="nuvia-placeholder" style="aspect-ratio: {{ ratio | default: '1 / 1' }};">
+  <span class="nuvia-placeholder__label">{{ label | default: 'Image' }}</span>
+</div>
+
+{% stylesheet %}
+  .nuvia-placeholder {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e2e2e2;
+    color: #767676;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .nuvia-placeholder__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-family: sans-serif;
+  }
+{% endstylesheet %}

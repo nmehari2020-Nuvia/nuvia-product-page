@@ -1,0 +1,238 @@
+{% comment %}
+  Nuvia — Testimonial Wall
+  All quotes, names and the "Verified" tag are PLACEHOLDER content until
+  real reviews are supplied — defaults are written to be unmistakably
+  fake so they can never be mistaken for real customer data if published
+  by accident.
+{% endcomment %}
+
+<div class="nuvia-testimonials">
+  <div class="nuvia-testimonials__container">
+    {% if section.settings.eyebrow != blank or section.settings.headline != blank %}
+      <div class="nuvia-heading">
+        {% if section.settings.eyebrow != blank %}
+          <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        {% if section.settings.headline != blank %}
+          <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <ul class="nuvia-testimonials__list" role="list">
+        {% for block in section.blocks %}
+          {% if block.type == 'testimonial' %}
+            <li class="nuvia-testimonials__card" {{ block.shopify_attributes }}>
+              <span class="nuvia-testimonials__stars" aria-hidden="true">
+                {% for i in (1..5) %}
+                  {% render 'nuvia-icon', icon: 'star', class: 'is-filled' %}
+                {% endfor %}
+              </span>
+              <p class="nuvia-testimonials__quote">{{ block.settings.quote }}</p>
+              <div class="nuvia-testimonials__meta">
+                <span class="nuvia-testimonials__name">{{ block.settings.name }}</span>
+                {% if block.settings.verified %}
+                  <span class="nuvia-testimonials__verified">
+                    {% render 'nuvia-icon', icon: 'check' %}
+                    {{ section.settings.verified_label }}
+                  </span>
+                {% endif %}
+              </div>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-testimonials {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-star: #F5C518;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #F7F5F1;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-testimonials__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-testimonials__list {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0.25rem 0.75rem;
+  }
+
+  .nuvia-testimonials__card {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .nuvia-testimonials__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--nuvia-star);
+    margin-bottom: 0.625rem;
+  }
+
+  .nuvia-testimonials__stars .nuvia-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .nuvia-testimonials__quote {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #2a2a2a;
+    margin: 0 0 1rem;
+  }
+
+  .nuvia-testimonials__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .nuvia-testimonials__name {
+    font-weight: 600;
+  }
+
+  .nuvia-testimonials__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-testimonials__verified .nuvia-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-testimonials__list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: visible;
+    }
+
+    .nuvia-testimonials__card {
+      flex: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia Testimonial Wall",
+  "tag": "section",
+  "class": "section-nuvia-testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "WHAT CUSTOMERS SAY"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Real relief, in their <em>own words</em></p>"
+    },
+    {
+      "type": "text",
+      "id": "verified_label",
+      "label": "Verified badge text",
+      "default": "Verified Buyer"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote (PLACEHOLDER)",
+          "default": "PLACEHOLDER — add a real customer quote here before publishing."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer name (PLACEHOLDER)",
+          "default": "PLACEHOLDER — Customer Name"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Show verified badge",
+          "info": "Only enable once this is a real, verified review.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia Testimonial Wall",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}
