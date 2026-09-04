@@ -1,0 +1,217 @@
+{% comment %}
+  Nuvia — FAQ
+  Default questions are drawn from the top objections in category reviews
+  (research/product-brief.md §3): heat intensity, battery life, massage
+  strength, strap fit, auto shut-off. Answers avoid numeric specs that
+  haven't been confirmed with the supplier — see research/specs-to-confirm.md.
+  Native <details>/<summary> accordion — no JS required.
+{% endcomment %}
+
+<div class="nuvia-faq">
+  <div class="nuvia-faq__container">
+    <div class="nuvia-heading">
+      {% if section.settings.eyebrow != blank %}
+        <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.headline != blank %}
+        <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="nuvia-faq__list">
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' %}
+            <details class="nuvia-faq__item" {{ block.shopify_attributes }}>
+              <summary>
+                <span>{{ block.settings.question }}</span>
+                {% render 'nuvia-icon', icon: 'chevron', class: 'nuvia-faq__chevron' %}
+              </summary>
+              <div class="nuvia-faq__answer">{{ block.settings.answer }}</div>
+            </details>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nuvia-faq {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #F7F5F1;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-faq__container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-faq__list {
+    background: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .nuvia-faq__item {
+    border-bottom: 1px solid #ececec;
+  }
+
+  .nuvia-faq__item:last-child {
+    border-bottom: none;
+  }
+
+  .nuvia-faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    list-style: none;
+  }
+
+  .nuvia-faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nuvia-faq__chevron {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    transition: transform 0.15s ease;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-faq__item[open] .nuvia-faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .nuvia-faq__answer {
+    padding: 0 1.25rem 1.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #3a3a3a;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia FAQ",
+  "tag": "section",
+  "class": "section-nuvia-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "FAQ"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Questions, <em>answered</em></p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Does Nuvia get hot?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Nuvia uses gentle, soothing infrared heat designed to help your muscles relax — it's meant to feel warm and comforting, not intensely hot.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia FAQ",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Does Nuvia get hot?",
+            "answer": "<p>Nuvia uses gentle, soothing infrared heat designed to help your muscles relax — it's meant to feel warm and comforting, not intensely hot like a heating pad on its highest setting.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does the battery last?",
+            "answer": "<p>Nuvia is fully cordless and rechargeable via USB. A full charge easily covers several sessions before you need to plug it back in, and lighter heat and intensity settings stretch runtime further.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is the massage strong enough for real tension?",
+            "answer": "<p>Nuvia's kneading nodes are designed to mimic finger-and-thumb pressure, with multiple intensity levels so you can dial it up as your muscles get used to it.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Will the straps be comfortable for my size?",
+            "answer": "<p>The adjustable straps let you customize both fit and pressure, so you can find a comfortable hold whether you're using it for five minutes or thirty.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Why does it shut off automatically?",
+            "answer": "<p>Nuvia includes an automatic shut-off as a safety feature at the end of each session. Just turn it back on to keep going — it's a safeguard, not a limit on how much you can use it.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
