@@ -1,0 +1,156 @@
+{% comment %}
+  Nuvia — Announcement Bar
+  Thin rotating trust-stat strip. Purely promotional/policy copy — any
+  numeric claim (review counts, customer counts) ships as a labeled
+  PLACEHOLDER block so it can't accidentally go live as an invented stat.
+{% endcomment %}
+
+<nuvia-announcement-bar
+  class="nuvia-announce"
+  data-rotate-ms="{{ section.settings.rotate_seconds | times: 1000 }}"
+>
+  {% if section.blocks.size > 0 %}
+    <ul class="nuvia-announce__list" role="list">
+      {% for block in section.blocks %}
+        <li class="nuvia-announce__item{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+          {{ block.settings.text }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</nuvia-announcement-bar>
+
+{% stylesheet %}
+  .nuvia-announce {
+    --nuvia-forest: #2C4A3A;
+    display: block;
+    background: var(--nuvia-forest);
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .nuvia-announce__list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-height: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .nuvia-announce__item {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .nuvia-announce__item.is-active {
+    position: relative;
+    opacity: 1;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-announce__item {
+      font-size: 0.8125rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class NuviaAnnouncementBar extends HTMLElement {
+    connectedCallback() {
+      this.items = Array.from(this.querySelectorAll('.nuvia-announce__item'));
+      if (this.items.length < 2) return;
+
+      this.index = 0;
+      this.intervalMs = parseInt(this.dataset.rotateMs, 10) || 4000;
+      this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (this.prefersReducedMotion) return;
+
+      this.start();
+      this.addEventListener('mouseenter', () => this.stop());
+      this.addEventListener('mouseleave', () => this.start());
+      this.addEventListener('focusin', () => this.stop());
+      this.addEventListener('focusout', () => this.start());
+    }
+
+    start() {
+      this.stop();
+      this.timer = setInterval(() => this.next(), this.intervalMs);
+    }
+
+    stop() {
+      if (this.timer) clearInterval(this.timer);
+    }
+
+    next() {
+      const current = this.items[this.index];
+      this.index = (this.index + 1) % this.items.length;
+      const nextItem = this.items[this.index];
+      current.classList.remove('is-active');
+      current.style.position = 'absolute';
+      nextItem.classList.add('is-active');
+      nextItem.style.position = 'relative';
+    }
+
+    disconnectedCallback() {
+      this.stop();
+    }
+  }
+
+  customElements.define('nuvia-announcement-bar', NuviaAnnouncementBar);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Nuvia Announcement Bar",
+  "tag": "section",
+  "class": "section-nuvia-announce",
+  "settings": [
+    {
+      "type": "range",
+      "id": "rotate_seconds",
+      "label": "Seconds between messages",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Trust stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Message",
+          "default": "90-Day Money-Back Guarantee"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia Announcement Bar",
+      "blocks": [
+        { "type": "stat", "settings": { "text": "90-Day Money-Back Guarantee" } },
+        { "type": "stat", "settings": { "text": "Free Shipping on All US Orders" } },
+        { "type": "stat", "settings": { "text": "PLACEHOLDER — add real customer count or rating once available" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
