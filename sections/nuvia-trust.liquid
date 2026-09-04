@@ -1,0 +1,220 @@
+{% comment %}
+  Nuvia — The Trust (professional endorsement)
+  Off by default via enable_section — this section cannot publish by
+  accident. Photo, name, credentials and quote are all PLACEHOLDER
+  content until real endorsements are supplied; turn the section on only
+  after replacing them (or delete it if you decide not to use it).
+{% endcomment %}
+
+{% if section.settings.enable_section %}
+  <div class="nuvia-trust">
+    <div class="nuvia-trust__container">
+      <div class="nuvia-heading">
+        {% if section.settings.eyebrow != blank %}
+          <p class="nuvia-heading__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        {% if section.settings.headline != blank %}
+          <h2 class="nuvia-heading__title">{{ section.settings.headline }}</h2>
+        {% endif %}
+      </div>
+
+      {% if section.blocks.size > 0 %}
+        <div class="nuvia-trust__cards">
+          {% for block in section.blocks %}
+            {% if block.type == 'endorsement' %}
+              <div class="nuvia-trust__card" {{ block.shopify_attributes }}>
+                <div class="nuvia-trust__photo">
+                  {% if block.settings.photo != blank %}
+                    {{ block.settings.photo | image_url: width: 300 | image_tag:
+                      loading: 'lazy',
+                      widths: '150, 200, 300',
+                      sizes: '96px',
+                      alt: block.settings.name
+                    }}
+                  {% else %}
+                    {% render 'nuvia-placeholder', label: 'Photo', ratio: '1 / 1' %}
+                  {% endif %}
+                </div>
+                <blockquote class="nuvia-trust__quote">{{ block.settings.quote }}</blockquote>
+                <p class="nuvia-trust__name">{{ block.settings.name }}</p>
+                <p class="nuvia-trust__credentials">{{ block.settings.credentials }}</p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .nuvia-trust {
+    --nuvia-forest: #2C4A3A;
+    --nuvia-sage: #5A8A6A;
+    --nuvia-font-headline: 'Playfair Display', Georgia, serif;
+    --nuvia-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: #F7F5F1;
+    padding: 3rem 0;
+    font-family: var(--nuvia-font-body);
+  }
+
+  .nuvia-trust__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .nuvia-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .nuvia-heading__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nuvia-sage);
+    margin: 0 0 0.5rem;
+  }
+
+  .nuvia-heading__title {
+    font-family: var(--nuvia-font-headline);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: #1A1A1A;
+  }
+
+  .nuvia-heading__title em {
+    font-style: italic;
+    color: var(--nuvia-forest);
+  }
+
+  .nuvia-trust__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .nuvia-trust__card {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .nuvia-trust__photo {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .nuvia-trust__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .nuvia-trust__quote {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #2a2a2a;
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+
+  .nuvia-trust__name {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin: 0;
+  }
+
+  .nuvia-trust__credentials {
+    font-size: 0.8125rem;
+    color: #5c5c5c;
+    margin: 0.125rem 0 0;
+  }
+
+  @media (min-width: 750px) {
+    .nuvia-trust__cards {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nuvia The Trust",
+  "tag": "section",
+  "class": "section-nuvia-trust",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "label": "Show this section",
+      "info": "Off by default. Turn on only after replacing the placeholder photo, name, credentials and quote below with real, permissioned endorsements.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "THE TRUST"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Backed by <em>professionals</em></p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "endorsement",
+      "name": "Endorsement",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Photo (PLACEHOLDER)"
+        },
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote (PLACEHOLDER)",
+          "default": "<p>PLACEHOLDER — add a real, permissioned quote from this professional.</p>"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name (PLACEHOLDER)",
+          "default": "PLACEHOLDER — Professional Name"
+        },
+        {
+          "type": "text",
+          "id": "credentials",
+          "label": "Credentials (PLACEHOLDER)",
+          "default": "PLACEHOLDER — Credentials, e.g. DPT, PT"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nuvia The Trust",
+      "blocks": [
+        { "type": "endorsement" },
+        { "type": "endorsement" }
+      ]
+    }
+  ]
+}
+{% endschema %}
