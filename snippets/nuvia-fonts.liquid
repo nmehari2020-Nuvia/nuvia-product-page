@@ -1,0 +1,24 @@
+{% comment %}
+  Non-blocking Google Fonts loader for Playfair Display (headline font).
+  Uses the loadCSS swap pattern: the stylesheet loads with media="print"
+  (so it never blocks the critical rendering path), then flips to
+  media="all" once loaded. Google's own font CSS also carries
+  display=swap, so headline text renders immediately in the Georgia
+  fallback and swaps to Playfair Display when it's ready — no invisible
+  text, no blocked first paint.
+
+  Render this once, ideally in theme.liquid's <head> for best performance.
+  If it's skipped entirely, headlines simply render in the Georgia
+  fallback — nothing breaks.
+{% endcomment %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap"
+  media="print"
+  onload="this.media='all'"
+>
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
+</noscript>
